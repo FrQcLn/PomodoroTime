@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pomodorooq</title>
+    <title>Ghibli Night Pomodoro</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
@@ -142,3 +142,181 @@
         <div class="timer-section">
             <h1>Pomodoro Studio</h1>
             <div class="status" id="statusText">Fokus</div>
+            <div class="timer-display" id="timeDisplay">25:00</div>
+            <div class="session-info" id="sessionText">Sesi 1 dari 4</div>
+
+            <div class="controls">
+                <button id="startPauseBtn" onclick="toggleTimer()"><i class="fas fa-play"></i> Mulai</button>
+                <button id="resetBtn" onclick="resetTimer()"><i class="fas fa-redo"></i> Reset</button>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <div class="settings-card">
+                <h3><i class="fas fa-cog"></i> Timer Settings</h3>
+                <div class="setting-group"><label>Fokus (Menit)</label><input type="number" id="focusInput" value="25"></div>
+                <div class="setting-group"><label>Short Break</label><input type="number" id="shortBreakInput" value="5"></div>
+                <div class="setting-group"><label>Long Break</label><input type="number" id="longBreakInput" value="15"></div>
+                <div class="setting-group"><label>Sesi Sebelum Long Break</label><input type="number" id="sessionsInput" value="4"></div>
+                <button class="apply-btn" onclick="applySettings()">Terapkan Waktu</button>
+            </div>
+
+            <div class="settings-card">
+                <h3><i class="fas fa-music"></i> Custom Music</h3>
+                <div class="music-input-group">
+                    <input type="text" id="musicUrl" placeholder="Link Spotify / YouTube...">
+                    <button onclick="loadMusic()">Set</button>
+                </div>
+                <div class="music-container" id="musicContainer">
+                    <iframe id="musicFrame" src="https://open.spotify.com/embed/playlist/37i9dQZF1DWZqdX9S9m7mI" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="videoModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 id="modalTitle">Pesan Notifikasi</h2>
+            <div class="video-wrapper">
+                <iframe id="alertVideo" src="" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <button class="close-modal-btn" onclick="closeVideoModal()">Siap Lanjut!</button>
+        </div>
+    </div>
+
+    <script>
+        let focusTime = 25 * 60;
+        let shortBreakTime = 5 * 60;
+        let longBreakTime = 15 * 60;
+        let targetSessions = 4;
+        let timeLeft = focusTime;
+        let timerInterval;
+        let isRunning = false;
+        let currentMode = 'focus'; 
+        let focusCompleted = 0;
+
+        function updateDisplay() {
+            let m = Math.floor(timeLeft / 60);
+            let s = timeLeft % 60;
+            document.getElementById('timeDisplay').textContent = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
+            document.title = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s} - Pomodoro`;
+        }
+
+        function toggleTimer() {
+            const btn = document.getElementById('startPauseBtn');
+            if (isRunning) {
+                clearInterval(timerInterval);
+                btn.innerHTML = '<i class="fas fa-play"></i> Lanjut';
+            } else {
+                timerInterval = setInterval(() => {
+                    if (timeLeft > 0) {
+                        timeLeft--;
+                        updateDisplay();
+                    } else {
+                        switchMode();
+                    }
+                }, 1000);
+                btn.innerHTML = '<i class="fas fa-pause"></i> Jeda';
+            }
+            isRunning = !isRunning;
+        }
+
+        function switchMode() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            document.getElementById('startPauseBtn').innerHTML = '<i class="fas fa-play"></i> Mulai';
+            
+            const statusLabel = document.getElementById('statusText');
+            let alertMessage = "";
+            
+            if (currentMode === 'focus') {
+                focusCompleted++;
+                alertMessage = "Istirahat dulu cuy..."; // Pesan selesai fokus
+                
+                if (focusCompleted >= targetSessions) {
+                    currentMode = 'longBreak';
+                    timeLeft = longBreakTime;
+                    statusLabel.textContent = "Long Break";
+                    focusCompleted = 0; 
+                } else {
+                    currentMode = 'shortBreak';
+                    timeLeft = shortBreakTime;
+                    statusLabel.textContent = "Short Break";
+                }
+            } else {
+                alertMessage = "Sudah waktunya belajar!!"; // Pesan selesai istirahat
+                currentMode = 'focus';
+                timeLeft = focusTime;
+                statusLabel.textContent = "Fokus";
+            }
+            
+            document.getElementById('sessionText').textContent = `Fokus Ke-${currentMode === 'focus' ? focusCompleted + 1 : focusCompleted} dari ${targetSessions}`;
+            updateDisplay();
+            
+            // Panggil fungsi pop-up video
+            showVideoModal(alertMessage);
+        }
+
+        // FUNGSI UNTUK MENAMPILKAN POP-UP VIDEO
+        function showVideoModal(message) {
+            document.getElementById('modalTitle').textContent = message;
+            // Link video YouTube dengan tambahan "?autoplay=1" agar otomatis memutar
+            document.getElementById('alertVideo').src = "https://www.youtube.com/embed/oHg5SJYRHA0?autoplay=1";
+            document.getElementById('videoModal').style.display = 'flex';
+        }
+
+        // FUNGSI UNTUK MENUTUP POP-UP
+        function closeVideoModal() {
+            document.getElementById('videoModal').style.display = 'none';
+            // Menghapus link (src) iframe agar video berhenti memutar/bersuara di background
+            document.getElementById('alertVideo').src = "";
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            currentMode = 'focus';
+            focusCompleted = 0;
+            timeLeft = focusTime;
+            document.getElementById('statusText').textContent = "Fokus";
+            document.getElementById('sessionText').textContent = `Sesi 1 dari ${targetSessions}`;
+            document.getElementById('startPauseBtn').innerHTML = '<i class="fas fa-play"></i> Mulai';
+            updateDisplay();
+        }
+
+        function applySettings() {
+            focusTime = document.getElementById('focusInput').value * 60;
+            shortBreakTime = document.getElementById('shortBreakInput').value * 60;
+            longBreakTime = document.getElementById('longBreakInput').value * 60;
+            targetSessions = parseInt(document.getElementById('sessionsInput').value);
+            resetTimer();
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        function loadMusic() {
+            const url = document.getElementById('musicUrl').value;
+            const frame = document.getElementById('musicFrame');
+            if (!url) return;
+
+            if (url.includes("spotify.com")) {
+                let embedUrl = url.replace("spotify.com/", "spotify.com/embed/");
+                frame.src = embedUrl;
+                frame.height = "152";
+            } else if (url.includes("youtube.com") || url.includes("youtu.be")) {
+                let videoId = url.includes("v=") ? url.split("v=")[1].split("&")[0] : url.split("/").pop();
+                frame.src = `https://www.youtube.com/embed/${videoId}`;
+                frame.height = "200";
+            }
+        }
+
+        updateDisplay();
+    </script>
+</body>
+</html>
