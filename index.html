@@ -4,42 +4,70 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ghibli Night Pomodoro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        * {
+            box-sizing: border-box;
+        }
 
         body {
             margin: 0;
             padding: 0;
             font-family: 'Poppins', sans-serif;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            /* 
-               UBAH NAMA FILE DI BAWAH INI JIKA BERBEDA
-               Misalnya jika gambar Anda bernama "hutan.png", ubah menjadi url('hutan.png')
-            */
             background-image: linear-gradient(rgba(10, 15, 20, 0.3), rgba(10, 15, 20, 0.3)), url('hutan.jpg'); 
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             color: #e0e0e0;
+            padding: 20px;
         }
 
+        /* Tombol Fullscreen Mengambang */
+        .fullscreen-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 100;
+            transition: 0.3s;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fullscreen-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        /* Container Utama - Responsif */
         .container {
             display: flex;
-            flex-direction: row;
-            /* Transparansi diturunkan menjadi 0.35 agar lebih pudar */
+            flex-direction: row; /* Default Desktop: Samping-sampingan */
             background: rgba(20, 25, 30, 0.35); 
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 25px;
             padding: 40px;
-            width: 850px;
-            max-width: 95%;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            width: 100%;
+            max-width: 950px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.15);
             gap: 40px;
+            transition: 0.3s;
         }
 
         /* Sisi Kiri: Timer */
@@ -54,26 +82,25 @@
         }
 
         .timer-section h1 {
-            margin-top: 0;
-            font-size: 28px;
+            margin: 0;
+            font-size: 24px;
             color: #8ab4f8;
             font-weight: 600;
             letter-spacing: 1px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            text-align: center;
         }
 
         .status {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 400;
-            margin-top: 20px;
+            margin-top: 15px;
             text-transform: uppercase;
             letter-spacing: 3px;
             color: #a8c7fa;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
         }
 
         .timer-display {
-            font-size: 100px;
+            font-size: clamp(60px, 10vw, 100px); /* Ukuran teks dinamis sesuai layar */
             font-weight: 700;
             margin: 10px 0;
             color: #ffffff;
@@ -82,10 +109,9 @@
         }
 
         .session-info {
-            font-size: 15px;
-            margin-bottom: 30px;
+            font-size: 14px;
+            margin-bottom: 25px;
             color: #e8eaed;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
 
         .controls {
@@ -97,14 +123,12 @@
             background: #1e8e3e;
             color: white;
             border: none;
-            padding: 12px 30px;
-            border-radius: 8px;
-            font-size: 16px;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-size: 15px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Poppins', sans-serif;
+            transition: 0.3s;
             font-weight: 600;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
         }
 
         .controls button:hover {
@@ -115,93 +139,129 @@
         .controls button#resetBtn {
             background: #d93025;
         }
-        
-        .controls button#resetBtn:hover {
-            background: #c5221f;
-        }
 
         /* Sisi Kanan: Pengaturan & Musik */
         .settings-section {
-            flex: 1;
+            flex: 1.2;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            gap: 20px;
         }
 
-        .settings-section h3 {
-            margin-top: 0;
-            font-size: 18px;
+        .settings-card {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .settings-card h3 {
+            margin: 0 0 15px 0;
+            font-size: 16px;
             color: #8ab4f8;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-            padding-bottom: 10px;
-            margin-bottom: 15px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .setting-group {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
-            font-size: 14px;
-            color: #e8eaed;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            margin-bottom: 10px;
+            font-size: 13px;
         }
 
         .setting-group input {
-            width: 60px;
+            width: 55px;
             padding: 6px;
-            border-radius: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             background: rgba(0, 0, 0, 0.4);
             color: white;
             text-align: center;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .setting-group input:focus {
-            outline: none;
-            border-color: #8ab4f8;
         }
 
         .apply-btn {
-            width: 100%;
-            background: rgba(60, 64, 67, 0.8);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: #8ab4f8;
+            color: #1a1a1a;
+            border: none;
             padding: 10px;
             border-radius: 8px;
             cursor: pointer;
-            margin-top: 10px;
-            margin-bottom: 25px;
+            width: 100%;
+            font-weight: 700;
             transition: 0.3s;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
         }
 
         .apply-btn:hover {
-            background: rgba(95, 99, 104, 0.9);
+            background: #aecbff;
         }
 
-        /* Pemutar Musik */
-        .music-player {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 15px;
+        /* Music Player Styling */
+        .music-input-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .music-input-group input {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.4);
+            color: white;
+            font-size: 12px;
+        }
+
+        .music-input-group button {
+            background: #5f6368;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .music-container {
+            width: 100%;
+            min-height: 80px;
             border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
         }
 
-        .music-player h3 {
-            border-bottom: none;
-            margin-bottom: 10px;
-            padding-bottom: 0;
+        /* MEDIA QUERY: UNTUK HP (PORTRAIT) */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                flex-direction: column; /* Susun ke bawah di HP */
+                padding: 25px;
+                gap: 30px;
+            }
+            .timer-section {
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+                padding-right: 0;
+                padding-bottom: 30px;
+            }
+            .fullscreen-btn {
+                top: 10px;
+                right: 10px;
+            }
         }
     </style>
 </head>
 <body>
 
+    <button class="fullscreen-btn" onclick="toggleFullscreen()" title="Fullscreen Mode">
+        <i class="fas fa-expand"></i>
+    </button>
+
     <div class="container">
-        <!-- Sisi Kiri: Timer -->
         <div class="timer-section">
             <h1>Pomodoro Studio</h1>
             <div class="status" id="statusText">Fokus</div>
@@ -209,36 +269,38 @@
             <div class="session-info" id="sessionText">Sesi 1 dari 4</div>
 
             <div class="controls">
-                <button id="startPauseBtn" onclick="toggleTimer()">Mulai</button>
-                <button id="resetBtn" onclick="resetTimer()">Reset</button>
+                <button id="startPauseBtn" onclick="toggleTimer()"><i class="fas fa-play"></i> Mulai</button>
+                <button id="resetBtn" onclick="resetTimer()"><i class="fas fa-redo"></i> Reset</button>
             </div>
         </div>
 
-        <!-- Sisi Kanan: Pengaturan & Musik -->
         <div class="settings-section">
-            <h3>Pengaturan Waktu (Menit)</h3>
-            <div class="setting-group">
-                <label>Waktu Fokus</label>
-                <input type="number" id="focusInput" value="25" min="1">
+            <div class="settings-card">
+                <h3><i class="fas fa-cog"></i> Timer Settings</h3>
+                <div class="setting-group">
+                    <label>Durasi Fokus</label>
+                    <input type="number" id="focusInput" value="25">
+                </div>
+                <div class="setting-group">
+                    <label>Istirahat</label>
+                    <input type="number" id="shortBreakInput" value="5">
+                </div>
+                <div class="setting-group">
+                    <label>Total Sesi</label>
+                    <input type="number" id="sessionsInput" value="4">
+                </div>
+                <button class="apply-btn" onclick="applySettings()">Simpan Waktu</button>
             </div>
-            <div class="setting-group">
-                <label>Istirahat Pendek</label>
-                <input type="number" id="shortBreakInput" value="5" min="1">
-            </div>
-            <div class="setting-group">
-                <label>Istirahat Panjang</label>
-                <input type="number" id="longBreakInput" value="15" min="1">
-            </div>
-            <div class="setting-group">
-                <label>Total Sesi</label>
-                <input type="number" id="sessionsInput" value="4" min="1">
-            </div>
-            <button class="apply-btn" onclick="applySettings()">Terapkan Pengaturan</button>
 
-            <!-- Spotify Embed Player -->
-            <div class="music-player">
-                <h3>Playlist Latar (Spotify)</h3>
-                <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZF1DWZeKCadgRdKQ?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            <div class="settings-card">
+                <h3><i class="fas fa-music"></i> Custom Music</h3>
+                <div class="music-input-group">
+                    <input type="text" id="musicUrl" placeholder="Link Spotify / YouTube...">
+                    <button onclick="loadMusic()">Set</button>
+                </div>
+                <div class="music-container" id="musicContainer">
+                    <iframe id="musicFrame" src="https://open.spotify.com/embed/playlist/37i9dQZF1DX8Ueb9CjXp7Y" width="100%" height="152" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                </div>
             </div>
         </div>
     </div>
@@ -246,99 +308,102 @@
     <script>
         let focusTime = 25 * 60;
         let shortBreakTime = 5 * 60;
-        let longBreakTime = 15 * 60;
         let targetSessions = 4;
-
         let timeLeft = focusTime;
         let timerInterval;
         let isRunning = false;
         let currentMode = 'focus'; 
         let currentSession = 1;
 
-        const timeDisplay = document.getElementById('timeDisplay');
-        const statusText = document.getElementById('statusText');
-        const sessionText = document.getElementById('sessionText');
-        const startPauseBtn = document.getElementById('startPauseBtn');
-
         function updateDisplay() {
-            let minutes = Math.floor(timeLeft / 60);
-            let seconds = timeLeft % 60;
-            
-            minutes = minutes < 10 ? '0' + minutes : minutes;
-            seconds = seconds < 10 ? '0' + seconds : seconds;
-            
-            timeDisplay.textContent = `${minutes}:${seconds}`;
+            let m = Math.floor(timeLeft / 60);
+            let s = timeLeft % 60;
+            document.getElementById('timeDisplay').textContent = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
         }
 
         function toggleTimer() {
+            const btn = document.getElementById('startPauseBtn');
             if (isRunning) {
                 clearInterval(timerInterval);
-                startPauseBtn.textContent = "Lanjut";
+                btn.innerHTML = '<i class="fas fa-play"></i> Lanjut';
             } else {
-                timerInterval = setInterval(countdown, 1000);
-                startPauseBtn.textContent = "Jeda";
+                timerInterval = setInterval(() => {
+                    if (timeLeft > 0) {
+                        timeLeft--;
+                        updateDisplay();
+                    } else {
+                        switchMode();
+                    }
+                }, 1000);
+                btn.innerHTML = '<i class="fas fa-pause"></i> Jeda';
             }
             isRunning = !isRunning;
-        }
-
-        function countdown() {
-            if (timeLeft > 0) {
-                timeLeft--;
-                updateDisplay();
-            } else {
-                switchMode();
-            }
         }
 
         function switchMode() {
             clearInterval(timerInterval);
             isRunning = false;
-            startPauseBtn.textContent = "Mulai";
-
+            document.getElementById('startPauseBtn').innerHTML = '<i class="fas fa-play"></i> Mulai';
             if (currentMode === 'focus') {
-                if (currentSession >= targetSessions) {
-                    currentMode = 'longBreak';
-                    timeLeft = longBreakTime;
-                    statusText.textContent = "Istirahat Panjang";
-                    currentSession = 0; 
-                } else {
-                    currentMode = 'shortBreak';
-                    timeLeft = shortBreakTime;
-                    statusText.textContent = "Istirahat Pendek";
-                }
+                currentMode = 'break';
+                timeLeft = shortBreakTime;
+                document.getElementById('statusText').textContent = "Istirahat";
             } else {
                 currentMode = 'focus';
                 timeLeft = focusTime;
-                statusText.textContent = "Fokus";
+                document.getElementById('statusText').textContent = "Fokus";
                 currentSession++;
             }
-
-            sessionText.textContent = `Sesi ${currentSession === 0 ? targetSessions : currentSession} dari ${targetSessions}`;
+            document.getElementById('sessionText').textContent = `Sesi ${currentSession} dari ${targetSessions}`;
             updateDisplay();
-            
-            alert(`Waktu ${currentMode === 'focus' ? 'Istirahat selesai, waktunya Fokus!' : 'Fokus selesai, waktunya Istirahat!'}`);
+            alert("Waktu Habis!");
         }
 
         function resetTimer() {
             clearInterval(timerInterval);
             isRunning = false;
-            currentMode = 'focus';
-            currentSession = 1;
             timeLeft = focusTime;
-            
-            statusText.textContent = "Fokus";
-            sessionText.textContent = `Sesi ${currentSession} dari ${targetSessions}`;
-            startPauseBtn.textContent = "Mulai";
+            document.getElementById('startPauseBtn').innerHTML = '<i class="fas fa-play"></i> Mulai';
             updateDisplay();
         }
 
         function applySettings() {
             focusTime = document.getElementById('focusInput').value * 60;
             shortBreakTime = document.getElementById('shortBreakInput').value * 60;
-            longBreakTime = document.getElementById('longBreakInput').value * 60;
             targetSessions = document.getElementById('sessionsInput').value;
-            
-            resetTimer(); 
+            resetTimer();
+        }
+
+        // Fitur Fullscreen
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    alert(`Gagal Fullscreen: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // Fitur Music Embed
+        function loadMusic() {
+            const url = document.getElementById('musicUrl').value;
+            const frame = document.getElementById('musicFrame');
+            if (!url) return;
+
+            if (url.includes("spotify.com")) {
+                let embedUrl = url.replace("open.spotify.com/", "open.spotify.com/embed/").split('?')[0];
+                frame.src = embedUrl;
+                frame.height = "152";
+            } else if (url.includes("youtube.com") || url.includes("youtu.be")) {
+                let videoId = url.includes("v=") ? url.split("v=")[1].split("&")[0] : url.split("/").pop();
+                frame.src = `https://www.youtube.com/embed/${videoId}`;
+                frame.height = "200";
+            } else {
+                alert("Gunakan link Spotify/YouTube yang valid.");
+            }
         }
 
         updateDisplay();
