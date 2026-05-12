@@ -8,258 +8,105 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             font-family: 'Poppins', sans-serif;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: flex; justify-content: center; align-items: center;
             background-image: linear-gradient(rgba(10, 15, 20, 0.3), rgba(10, 15, 20, 0.3)), url('hutan.jpg'); 
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            color: #e0e0e0;
-            padding: 20px;
+            background-size: cover; background-position: center; background-attachment: fixed;
+            color: #e0e0e0; padding: 20px;
         }
 
-        /* Tombol Fullscreen Mengambang */
+        /* Tombol Fullscreen */
         .fullscreen-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 10px;
-            border-radius: 50%;
-            cursor: pointer;
-            z-index: 100;
+            position: fixed; top: 20px; right: 20px;
+            background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white; padding: 10px; border-radius: 50%; cursor: pointer; z-index: 100;
+            width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;
             transition: 0.3s;
-            width: 45px;
-            height: 45px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
+        .fullscreen-btn:hover { background: rgba(255, 255, 255, 0.3); transform: scale(1.1); }
 
-        .fullscreen-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: scale(1.1);
-        }
-
-        /* Container Utama - Responsif */
+        /* Container Utama */
         .container {
-            display: flex;
-            flex-direction: row; /* Default Desktop: Samping-sampingan */
+            display: flex; flex-direction: row;
             background: rgba(20, 25, 30, 0.35); 
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-radius: 25px;
-            padding: 40px;
-            width: 100%;
-            max-width: 950px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border-radius: 25px; padding: 40px; width: 100%; max-width: 950px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.15);
             gap: 40px;
-            transition: 0.3s;
         }
 
-        /* Sisi Kiri: Timer */
         .timer-section {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            border-right: 1px solid rgba(255, 255, 255, 0.15);
-            padding-right: 40px;
+            flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            border-right: 1px solid rgba(255, 255, 255, 0.15); padding-right: 40px;
         }
 
-        .timer-section h1 {
-            margin: 0;
-            font-size: 24px;
-            color: #8ab4f8;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-align: center;
-        }
+        .timer-section h1 { margin: 0; font-size: 24px; color: #8ab4f8; font-weight: 600; }
 
         .status {
-            font-size: 16px;
-            font-weight: 400;
-            margin-top: 15px;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            color: #a8c7fa;
+            font-size: 16px; margin-top: 15px; text-transform: uppercase;
+            letter-spacing: 3px; color: #a8c7fa; font-weight: 600;
         }
 
         .timer-display {
-            font-size: clamp(60px, 10vw, 100px); /* Ukuran teks dinamis sesuai layar */
-            font-weight: 700;
-            margin: 10px 0;
-            color: #ffffff;
-            text-shadow: 0 4px 15px rgba(0,0,0,0.6);
-            line-height: 1;
+            font-size: clamp(60px, 10vw, 100px); font-weight: 700; margin: 10px 0;
+            color: #ffffff; text-shadow: 0 4px 15px rgba(0,0,0,0.6); line-height: 1;
         }
 
-        .session-info {
-            font-size: 14px;
-            margin-bottom: 25px;
-            color: #e8eaed;
-        }
+        .session-info { font-size: 14px; margin-bottom: 25px; color: #e8eaed; }
 
-        .controls {
-            display: flex;
-            gap: 15px;
-        }
-
+        .controls { display: flex; gap: 15px; }
         .controls button {
-            background: #1e8e3e;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 10px;
-            font-size: 15px;
-            cursor: pointer;
-            transition: 0.3s;
-            font-weight: 600;
+            background: #1e8e3e; color: white; border: none; padding: 12px 25px;
+            border-radius: 10px; font-size: 15px; cursor: pointer; transition: 0.3s; font-weight: 600;
         }
+        .controls button:hover { background: #188038; transform: translateY(-2px); }
+        .controls button#resetBtn { background: #d93025; }
 
-        .controls button:hover {
-            background: #188038;
-            transform: translateY(-2px);
-        }
-
-        .controls button#resetBtn {
-            background: #d93025;
-        }
-
-        /* Sisi Kanan: Pengaturan & Musik */
-        .settings-section {
-            flex: 1.2;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
+        /* Sisi Kanan */
+        .settings-section { flex: 1.2; display: flex; flex-direction: column; gap: 20px; }
         .settings-card {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 20px;
-            border-radius: 15px;
+            background: rgba(0, 0, 0, 0.2); padding: 20px; border-radius: 15px;
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
-
-        .settings-card h3 {
-            margin: 0 0 15px 0;
-            font-size: 16px;
-            color: #8ab4f8;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .setting-group {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            font-size: 13px;
-        }
-
+        .settings-card h3 { margin: 0 0 15px 0; font-size: 16px; color: #8ab4f8; display: flex; align-items: center; gap: 10px; }
+        
+        .setting-group { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 13px; }
         .setting-group input {
-            width: 55px;
-            padding: 6px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            background: rgba(0, 0, 0, 0.4);
-            color: white;
-            text-align: center;
+            width: 55px; padding: 6px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.4); color: white; text-align: center;
         }
 
         .apply-btn {
-            background: #8ab4f8;
-            color: #1a1a1a;
-            border: none;
-            padding: 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 100%;
-            font-weight: 700;
-            transition: 0.3s;
+            background: #8ab4f8; color: #1a1a1a; border: none; padding: 10px;
+            border-radius: 8px; cursor: pointer; width: 100%; font-weight: 700; transition: 0.3s;
         }
+        .apply-btn:hover { background: #aecbff; }
 
-        .apply-btn:hover {
-            background: #aecbff;
-        }
-
-        /* Music Player Styling */
-        .music-input-group {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-
+        /* Musik */
+        .music-input-group { display: flex; gap: 8px; margin-bottom: 15px; }
         .music-input-group input {
-            flex: 1;
-            padding: 8px 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            background: rgba(0, 0, 0, 0.4);
-            color: white;
-            font-size: 12px;
+            flex: 1; padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.4); color: white; font-size: 12px;
         }
+        .music-input-group button { background: #5f6368; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; }
 
-        .music-input-group button {
-            background: #5f6368;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 12px;
-        }
+        .music-container { width: 100%; border-radius: 12px; overflow: hidden; background: rgba(0,0,0,0.3); }
 
-        .music-container {
-            width: 100%;
-            min-height: 80px;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        /* MEDIA QUERY: UNTUK HP (PORTRAIT) */
+        /* Media Query HP */
         @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-            .container {
-                flex-direction: column; /* Susun ke bawah di HP */
-                padding: 25px;
-                gap: 30px;
-            }
-            .timer-section {
-                border-right: none;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-                padding-right: 0;
-                padding-bottom: 30px;
-            }
-            .fullscreen-btn {
-                top: 10px;
-                right: 10px;
-            }
+            .container { flex-direction: column; padding: 25px; }
+            .timer-section { border-right: none; border-bottom: 1px solid rgba(255, 255, 255, 0.15); padding-right: 0; padding-bottom: 30px; }
         }
     </style>
 </head>
 <body>
 
-    <button class="fullscreen-btn" onclick="toggleFullscreen()" title="Fullscreen Mode">
-        <i class="fas fa-expand"></i>
-    </button>
+    <button class="fullscreen-btn" onclick="toggleFullscreen()"><i class="fas fa-expand"></i></button>
 
     <div class="container">
         <div class="timer-section">
@@ -277,19 +124,11 @@
         <div class="settings-section">
             <div class="settings-card">
                 <h3><i class="fas fa-cog"></i> Timer Settings</h3>
-                <div class="setting-group">
-                    <label>Durasi Fokus</label>
-                    <input type="number" id="focusInput" value="25">
-                </div>
-                <div class="setting-group">
-                    <label>Istirahat</label>
-                    <input type="number" id="shortBreakInput" value="5">
-                </div>
-                <div class="setting-group">
-                    <label>Total Sesi</label>
-                    <input type="number" id="sessionsInput" value="4">
-                </div>
-                <button class="apply-btn" onclick="applySettings()">Simpan Waktu</button>
+                <div class="setting-group"><label>Fokus (Menit)</label><input type="number" id="focusInput" value="25"></div>
+                <div class="setting-group"><label>Short Break</label><input type="number" id="shortBreakInput" value="5"></div>
+                <div class="setting-group"><label>Long Break</label><input type="number" id="longBreakInput" value="15"></div>
+                <div class="setting-group"><label>Sesi Sebelum Long Break</label><input type="number" id="sessionsInput" value="4"></div>
+                <button class="apply-btn" onclick="applySettings()">Terapkan Waktu</button>
             </div>
 
             <div class="settings-card">
@@ -299,7 +138,7 @@
                     <button onclick="loadMusic()">Set</button>
                 </div>
                 <div class="music-container" id="musicContainer">
-                    <iframe id="musicFrame" src="https://open.spotify.com/embed/playlist/37i9dQZF1DX8Ueb9CjXp7Y" width="100%" height="152" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                    <iframe id="musicFrame" src="https://open.spotify.com/embed/playlist/37i9dQZF1DWZqdX9S9m7mI" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
                 </div>
             </div>
         </div>
@@ -308,17 +147,19 @@
     <script>
         let focusTime = 25 * 60;
         let shortBreakTime = 5 * 60;
+        let longBreakTime = 15 * 60;
         let targetSessions = 4;
         let timeLeft = focusTime;
         let timerInterval;
         let isRunning = false;
-        let currentMode = 'focus'; 
-        let currentSession = 1;
+        let currentMode = 'focus'; // focus, shortBreak, longBreak
+        let focusCompleted = 0;
 
         function updateDisplay() {
             let m = Math.floor(timeLeft / 60);
             let s = timeLeft % 60;
             document.getElementById('timeDisplay').textContent = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
+            document.title = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s} - Pomodoro`;
         }
 
         function toggleTimer() {
@@ -344,25 +185,40 @@
             clearInterval(timerInterval);
             isRunning = false;
             document.getElementById('startPauseBtn').innerHTML = '<i class="fas fa-play"></i> Mulai';
+            
+            const statusLabel = document.getElementById('statusText');
+            
             if (currentMode === 'focus') {
-                currentMode = 'break';
-                timeLeft = shortBreakTime;
-                document.getElementById('statusText').textContent = "Istirahat";
+                focusCompleted++;
+                if (focusCompleted >= targetSessions) {
+                    currentMode = 'longBreak';
+                    timeLeft = longBreakTime;
+                    statusLabel.textContent = "Long Break";
+                    focusCompleted = 0; // Reset hitungan setelah long break
+                } else {
+                    currentMode = 'shortBreak';
+                    timeLeft = shortBreakTime;
+                    statusLabel.textContent = "Short Break";
+                }
             } else {
                 currentMode = 'focus';
                 timeLeft = focusTime;
-                document.getElementById('statusText').textContent = "Fokus";
-                currentSession++;
+                statusLabel.textContent = "Fokus";
             }
-            document.getElementById('sessionText').textContent = `Sesi ${currentSession} dari ${targetSessions}`;
+            
+            document.getElementById('sessionText').textContent = `Fokus Ke-${currentMode === 'focus' ? focusCompleted + 1 : focusCompleted} dari ${targetSessions}`;
             updateDisplay();
-            alert("Waktu Habis!");
+            alert("Waktu Habis! Pindah ke mode: " + statusLabel.textContent);
         }
 
         function resetTimer() {
             clearInterval(timerInterval);
             isRunning = false;
+            currentMode = 'focus';
+            focusCompleted = 0;
             timeLeft = focusTime;
+            document.getElementById('statusText').textContent = "Fokus";
+            document.getElementById('sessionText').textContent = `Sesi 1 dari ${targetSessions}`;
             document.getElementById('startPauseBtn').innerHTML = '<i class="fas fa-play"></i> Mulai';
             updateDisplay();
         }
@@ -370,39 +226,32 @@
         function applySettings() {
             focusTime = document.getElementById('focusInput').value * 60;
             shortBreakTime = document.getElementById('shortBreakInput').value * 60;
-            targetSessions = document.getElementById('sessionsInput').value;
+            longBreakTime = document.getElementById('longBreakInput').value * 60;
+            targetSessions = parseInt(document.getElementById('sessionsInput').value);
             resetTimer();
         }
 
-        // Fitur Fullscreen
         function toggleFullscreen() {
             if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => {
-                    alert(`Gagal Fullscreen: ${err.message}`);
-                });
+                document.documentElement.requestFullscreen();
             } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                }
+                document.exitFullscreen();
             }
         }
 
-        // Fitur Music Embed
         function loadMusic() {
             const url = document.getElementById('musicUrl').value;
             const frame = document.getElementById('musicFrame');
             if (!url) return;
 
             if (url.includes("spotify.com")) {
-                let embedUrl = url.replace("open.spotify.com/", "open.spotify.com/embed/").split('?')[0];
+                let embedUrl = url.replace("spotify.com/", "spotify.com/embed/");
                 frame.src = embedUrl;
                 frame.height = "152";
             } else if (url.includes("youtube.com") || url.includes("youtu.be")) {
                 let videoId = url.includes("v=") ? url.split("v=")[1].split("&")[0] : url.split("/").pop();
                 frame.src = `https://www.youtube.com/embed/${videoId}`;
                 frame.height = "200";
-            } else {
-                alert("Gunakan link Spotify/YouTube yang valid.");
             }
         }
 
